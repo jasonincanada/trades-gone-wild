@@ -1,5 +1,5 @@
 # trades-gone-wild
-This is a side project using C# to manage pending trade plans.  Tick data is borrowed from the local MT4 installation running the [TickPunker expert advisor](https://github.com/nirgle/trades-gone-wild/blob/master/TradesGoneWild.Domain/TickPunker/TickPunker.cs).
+This is a side project using C# to manage pending trade plans.  Tick data is borrowed from the local MT4 installation running the [TickDropper expert advisor](https://github.com/nirgle/trades-gone-wild/blob/master/TradesGoneWild.Domain/TickPunker/TickDropper.mq4).
 
 Current ideas:
 
