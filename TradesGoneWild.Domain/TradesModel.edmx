@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="TradesGoneWildModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Alert">
+          <Key>
+            <PropertyRef Name="AlertID" />
+          </Key>
+          <Property Name="AlertID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FKInstrumentID" Type="int" Nullable="false" />
+          <Property Name="TargetDirection" Type="int" Nullable="false" />
+          <Property Name="PriceTarget" Type="numeric" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="ClosestPrice" Type="numeric" Precision="18" Scale="5" />
+          <Property Name="DateOpened" Type="datetime" Nullable="false" />
+          <Property Name="DateClosed" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Instrument">
+          <Key>
+            <PropertyRef Name="InstrumentID" />
+          </Key>
+          <Property Name="InstrumentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Market" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Symbol" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Alert_FKInstrumentID">
+          <End Role="Instrument" Type="Self.Instrument" Multiplicity="1" />
+          <End Role="Alert" Type="Self.Alert" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Instrument">
+              <PropertyRef Name="InstrumentID" />
+            </Principal>
+            <Dependent Role="Alert">
+              <PropertyRef Name="FKInstrumentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TradesGoneWildModelStoreContainer">
+          <EntitySet Name="Alert" EntityType="Self.Alert" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Instrument" EntityType="Self.Instrument" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Alert_FKInstrumentID" Association="Self.FK_Alert_FKInstrumentID">
+            <End Role="Instrument" EntitySet="Instrument" />
+            <End Role="Alert" EntitySet="Alert" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TradesGoneWildModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="StoreAlert">
+          <Key>
+            <PropertyRef Name="AlertID" />
+          </Key>
+          <Property Name="AlertID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FKInstrumentID" Type="Int32" Nullable="false" />
+          <Property Name="TargetDirection" Type="Int32" Nullable="false" />
+          <Property Name="PriceTarget" Type="Decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="ClosestPrice" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="DateOpened" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateClosed" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Instrument" Relationship="Self.FK_Alert_FKInstrumentID" FromRole="Alert" ToRole="Instrument" />
+        </EntityType>
+        <EntityType Name="StoreInstrument">
+          <Key>
+            <PropertyRef Name="InstrumentID" />
+          </Key>
+          <Property Name="InstrumentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Market" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Symbol" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Alerts" Relationship="Self.FK_Alert_FKInstrumentID" FromRole="Instrument" ToRole="Alert" />
+        </EntityType>
+        <Association Name="FK_Alert_FKInstrumentID">
+          <End Role="Instrument" Type="TradesGoneWildModel.StoreInstrument" Multiplicity="1" />
+          <End Role="Alert" Type="TradesGoneWildModel.StoreAlert" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Instrument">
+              <PropertyRef Name="InstrumentID" />
+            </Principal>
+            <Dependent Role="Alert">
+              <PropertyRef Name="FKInstrumentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TradesGoneWildEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="StoreAlerts" EntityType="TradesGoneWildModel.StoreAlert" />
+          <EntitySet Name="StoreInstruments" EntityType="TradesGoneWildModel.StoreInstrument" />
+          <AssociationSet Name="FK_Alert_FKInstrumentID" Association="Self.FK_Alert_FKInstrumentID">
+            <End Role="Instrument" EntitySet="StoreInstruments" />
+            <End Role="Alert" EntitySet="StoreAlerts" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TradesGoneWildModelStoreContainer" CdmEntityContainer="TradesGoneWildEntities">
+          <EntitySetMapping Name="StoreAlerts">
+            <EntityTypeMapping TypeName="TradesGoneWildModel.StoreAlert">
+              <MappingFragment StoreEntitySet="Alert">
+                <ScalarProperty Name="AlertID" ColumnName="AlertID" />
+                <ScalarProperty Name="FKInstrumentID" ColumnName="FKInstrumentID" />
+                <ScalarProperty Name="TargetDirection" ColumnName="TargetDirection" />
+                <ScalarProperty Name="PriceTarget" ColumnName="PriceTarget" />
+                <ScalarProperty Name="ClosestPrice" ColumnName="ClosestPrice" />
+                <ScalarProperty Name="DateOpened" ColumnName="DateOpened" />
+                <ScalarProperty Name="DateClosed" ColumnName="DateClosed" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StoreInstruments">
+            <EntityTypeMapping TypeName="TradesGoneWildModel.StoreInstrument">
+              <MappingFragment StoreEntitySet="Instrument">
+                <ScalarProperty Name="InstrumentID" ColumnName="InstrumentID" />
+                <ScalarProperty Name="Market" ColumnName="Market" />
+                <ScalarProperty Name="Symbol" ColumnName="Symbol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
